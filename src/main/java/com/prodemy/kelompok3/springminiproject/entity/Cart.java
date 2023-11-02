@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -25,9 +27,10 @@ public class Cart {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToMany(mappedBy = "carts")
-    private Set<Product> products;
+    @OneToMany(mappedBy = "cart", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
+    private List<CartItem> cartItems = new ArrayList<>();
 
-    private Long price;
+    @Column(name = "total_price")
+    private Long totalPrice;
 
 }

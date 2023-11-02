@@ -1,10 +1,7 @@
 package com.prodemy.kelompok3.springminiproject.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,21 +31,9 @@ public class Product {
     @OneToMany(mappedBy = "product")
     List<ProductImage> images;
 
-    @JsonBackReference
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name="products_cart",
-            joinColumns ={@JoinColumn(name = "product_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "cart_id", referencedColumnName = "id")}
-    )
-    private List<Cart> carts = new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<CartItem> cartItems = new ArrayList<>();
 
-    @JsonBackReference
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name="products_order",
-            joinColumns ={@JoinColumn(name = "product_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")}
-    )
-    private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();
 }

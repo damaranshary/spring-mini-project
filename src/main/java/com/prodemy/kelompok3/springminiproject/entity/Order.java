@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 
@@ -24,9 +28,12 @@ public class Order {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @ManyToMany(mappedBy = "orders")
-    private Set<Product> products;
+    @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 
-    private Long price;
+    @Column(name = "total_price")
+    private Long totalPrice;
 
+    @Column(name = "order_date_time")
+    private LocalDateTime orderDateTime;
 }

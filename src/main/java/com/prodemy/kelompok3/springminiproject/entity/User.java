@@ -21,15 +21,10 @@ public class User {
     @Id
     private String id;
 
-    @Column(name = "username", unique = true)
+    @Column(unique = true)
     private String username;
 
     private String password;
-
-    private String token;
-
-    @Column(name = "token_expired_at")
-    private Long tokenExpiredAt;
 
     private String role;
 

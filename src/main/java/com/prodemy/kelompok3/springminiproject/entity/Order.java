@@ -18,9 +18,9 @@ import java.util.Set;
 public class Order {
 
     @Id
-    private String cart;
+    private String id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

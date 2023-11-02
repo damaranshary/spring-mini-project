@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -16,9 +19,10 @@ import lombok.Setter;
 public class User {
 
     @Id
-    private String username;
+    private String id;
 
-    private String name;
+    @Column(name = "username", unique = true)
+    private String username;
 
     private String password;
 
@@ -31,4 +35,7 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Cart cart;
+
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders = new ArrayList<>();
 }

@@ -22,16 +22,12 @@ import java.util.List;
 public class Product {
 
     @Id
-    @NotNull
     private String id;
 
-    @NotNull
     private String name;
 
-    @NotNull
     private String description;
 
-    @NotNull
     private Long price;
 
     @JsonManagedReference

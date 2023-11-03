@@ -27,12 +27,12 @@ public class SecurityConfig {
                 .formLogin(
                         form -> form
                                 .loginPage("/login")
-                                .loginProcessingUrl("api/auth/login")
+                                .loginProcessingUrl("/api/auth/login")
                                 .defaultSuccessUrl("/home")
                                 .permitAll()
                 ).logout(
                         logout -> logout
-                                .logoutRequestMatcher(new AntPathRequestMatcher("/api/authlogout"))
+                                .logoutRequestMatcher(new AntPathRequestMatcher("/api/auth/logout"))
                 );
 
         return httpSecurity.build();

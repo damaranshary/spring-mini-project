@@ -32,8 +32,8 @@ public class Product {
     private Long price;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "product")
-    List<ProductImage> images;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductImage> images;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<CartItem> cartItems = new ArrayList<>();

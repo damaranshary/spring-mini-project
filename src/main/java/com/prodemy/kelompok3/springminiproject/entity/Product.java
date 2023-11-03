@@ -2,6 +2,7 @@ package com.prodemy.kelompok3.springminiproject.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,10 +22,13 @@ public class Product {
     @Id
     private String id;
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String description;
 
+    @NotNull
     private Long price;
 
     @JsonManagedReference

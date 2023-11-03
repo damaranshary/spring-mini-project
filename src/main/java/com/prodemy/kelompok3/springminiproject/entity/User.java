@@ -1,6 +1,7 @@
 package com.prodemy.kelompok3.springminiproject.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,10 +23,13 @@ public class User {
     private String id;
 
     @Column(unique = true)
+    @NotNull
     private String username;
 
+    @NotNull
     private String password;
 
+    @NotNull
     private String role;
 
     @OneToOne(mappedBy = "user")

@@ -36,4 +36,10 @@ public class Order {
 
     @Column(name = "order_date_time")
     private LocalDateTime orderDateTime;
+
+    @Column(name = "delivery_method")
+    private String deliveryMethod;
+
+    @Column(name = "payment_method")
+    private String paymentMethod;
 }

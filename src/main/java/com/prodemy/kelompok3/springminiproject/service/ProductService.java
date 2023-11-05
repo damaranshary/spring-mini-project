@@ -9,11 +9,13 @@ import java.util.List;
 public interface ProductService {
 
 
-    void addProduct(List<MultipartFile> files, Product product);
+    Product addProduct(List<MultipartFile> files, Product product);
 
     Product findProductById(String productId);
 
-    Product updateProduct(List<MultipartFile> files, Product product);
+    void updateProduct(List<MultipartFile> files, Product product);
+
+    Product updateProductWithoutImage(Product product);
 
     List<Product> getAllProduct();
 

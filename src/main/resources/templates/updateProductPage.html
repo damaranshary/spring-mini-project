@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>HAHAHAHAAHGAAAAAAAAA</title>
+</head>
+<body>
+<form th:action="@{'/products/update/' + ${product.getId()}}" th:object="${product}" method="post" enctype="multipart/form-data">
+    <label for="name">Nama</label>
+    <input type="text" name="name" id="name" th:field="*{name}" required />
+    <label for="description">Deskripsi</label>
+    <input type="text" name="description" id="description" th:field="*{description}" required />
+    <label for="price">Harga</label>
+    <input type="number" name="price" id="price" th:field="*{price}" required/>
+    <div th:if="${product.getImages().size() > 0}" th:each="i : ${#numbers.sequence(1, product.getImages().size(), 1)}" >
+        <img th:src="@{'/api/images/' + ${i} + '/' + ${product.getId}}" alt="product-image"/>
+        <p th:text="${i}"></p>
+    </div>
+    <input type="file" multiple name="images" id="images" accept="image/jpeg">
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

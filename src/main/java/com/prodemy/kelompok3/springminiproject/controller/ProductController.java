@@ -7,13 +7,16 @@ import com.prodemy.kelompok3.springminiproject.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@RestController
+@Controller
 public class ProductController {
 
     @Autowired
@@ -22,67 +25,101 @@ public class ProductController {
     @Autowired
     private ProductImageService productImageService;
 
-//    @GetMapping(path = "/api/images/{productId}")
-//    public ResponseEntity<byte[]> whatever(@PathVariable(name = "productId") String productId) {
-//        List<ProductImage> productImages = productService.findProductById(productId).getImages();
-//
-//        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(productImages.get(0).getData());
-//    }
+    @GetMapping(path = "/api/images/1/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getFirstImage(@PathVariable(name = "productId") String productId) {
+        List<ProductImage> productImages = productService.findProductById(productId).getImages();
 
-    @GetMapping(path = "/products/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> getProductById(@PathVariable(name = "productId") String productId) {
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(productImages.get(0).getData());
+    }
+
+    @GetMapping(path = "/api/images/2/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getSecondImage(@PathVariable(name = "productId") String productId) {
+        List<ProductImage> productImages = productService.findProductById(productId).getImages();
+
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(productImages.get(1).getData());
+    }
+
+    @GetMapping(path = "/api/images/3/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getThirdImage(@PathVariable(name = "productId") String productId) {
+        List<ProductImage> productImages = productService.findProductById(productId).getImages();
+
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(productImages.get(2).getData());
+    }
+
+
+    @GetMapping(path = "/products/{productId}")
+    public String getProductById(@PathVariable(name = "productId") String productId, Model model) {
         Product product = productService.findProductById(productId);
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(product);
+        model.addAttribute("product", product);
+
+        return "productPage";
     }
 
-    @GetMapping(
-            path = "/products",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    ) public ResponseEntity<List<Product>> getAllProduct() {
+    @GetMapping(path = "/products")
+    public String getAllProduct(Model model) {
         List<Product> productList = productService.getAllProduct();
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(productList);
+        model.addAttribute("productList", productList);
+
+        return "allProductPage";
     }
 
-    @PostMapping(
-            path = "/products/add",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> addProduct(@RequestParam(name = "name") String name,
-                                              @RequestParam(name = "description") String description,
-                                              @RequestParam(name = "price") Long price, Model model,
-                                              @RequestPart(name = "files") List<MultipartFile> images) {
+    @GetMapping(path = "/products/add")
+    public String addProductPage(Model model) {
+        Product product = new Product();
+
+        model.addAttribute("product", product);
+
+        return "addProductPage";
+    }
+
+    @PostMapping(path = "/products/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String addProduct(@RequestParam(name = "name") String name, @RequestParam(name = "description") String description, @RequestParam(name = "price") Long price, @RequestPart(name = "images") List<MultipartFile> images) {
         Product product = new Product();
         product.setName(name);
         product.setDescription(description);
         product.setPrice(price);
 
-        productService.addProduct(images, product);
+        product = productService.addProduct(images, product);
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(product);
+        return "redirect:/products/" + product.getId();
     }
 
-    @PatchMapping(path = "/products/update/{productId}")
+    @GetMapping(path = "/products/update/{productId}")
+    public String updateProductPage(@PathVariable(name = "productId") String productId, Model model) {
+        if (productId == null) {
+            return "notFound404Page";
+        }
+        Product product = productService.findProductById(productId);
+
+        model.addAttribute("product", product);
+
+        return "updateProductPage";
+    }
+
+    @PostMapping(path = "/products/update/{productId}")
     public String updateProduct(@PathVariable(name = "productId") String productId,
-                                                @RequestParam(name = "name") String name,
-                                                @RequestParam(name = "description") String description,
-                                                @RequestParam(name = "price") Long price,
-                                                @RequestPart(name = "images") List<MultipartFile> images,
-                                                Model model) {
+                                @RequestParam(name = "name") String name,
+                                @RequestParam(name = "description") String description,
+                                @RequestParam(name = "price") Long price,
+                                @RequestPart(name = "images") List<MultipartFile> images, Model model,
+                                BindingResult result) {
         Product product = new Product();
+        product.setId(productId);
         product.setName(name);
         product.setDescription(description);
         product.setPrice(price);
 
-        if (productService.findProductById(productId) != null) {
-            product.setId(productId);
-            model.addAttribute("product", productService.updateProduct(images, product));
-        } else {
-            return "productNotFound";
+        if (result.hasErrors()) {
+            model.addAttribute("product", product);
+
+            return "updateProductPage";
         }
 
-        return "updatedProduct";
+        productService.updateProduct(images, product);
+
+        return "redirect:/products/" + productId;
     }
 
     @DeleteMapping(path = "/products/{productId}", produces = MediaType.APPLICATION_JSON_VALUE)

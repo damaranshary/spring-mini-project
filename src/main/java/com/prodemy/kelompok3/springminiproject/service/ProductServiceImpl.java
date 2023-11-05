@@ -2,6 +2,7 @@ package com.prodemy.kelompok3.springminiproject.service;
 
 import com.prodemy.kelompok3.springminiproject.dto.ProductDto;
 import com.prodemy.kelompok3.springminiproject.entity.Product;
+import com.prodemy.kelompok3.springminiproject.entity.ProductImage;
 import com.prodemy.kelompok3.springminiproject.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,11 +23,13 @@ public class ProductServiceImpl implements ProductService {
     private ProductImageService productImageService;
 
     @Override
-    public void addProduct(List<MultipartFile> images, Product product) {
+    public Product addProduct(List<MultipartFile> images, Product product) {
         product.setId(UUID.randomUUID().toString());
         product.setImages(productImageService.addImage(images, product));
 
         productRepository.save(product);
+
+        return product;
     }
 
     @Override
@@ -36,16 +39,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product updateProduct(List<MultipartFile> images, Product product) {
-        Product productTemp = new Product();
+    public void updateProduct(List<MultipartFile> images, Product product) {
+        product.setImages(productImageService.addImage(images, product));
 
-        productTemp.setId(product.getId());
-        productTemp.setImages(productImageService.addImage(images, product));
-
-        productRepository.save(productTemp);
-
-        return productTemp;
+        productRepository.save(product);
     }
+
+    @Override
+    public Product updateProductWithoutImage(Product product) {
+        List<ProductImage> productImageList = product.getImages();
+
+        System.out.println(productImageList);
+        productRepository.save(product);
+
+        return product;
+    }
+
 
     @Override
     public List<Product> getAllProduct() {

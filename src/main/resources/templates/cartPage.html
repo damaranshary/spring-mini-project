@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Data Mahasiswa</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container" th:if="${cartItemList.size() > 0}" th:each="cartItem : ${cartItemList}">
+    <img th:src="@{'/api/images/1/' + ${cartItem.getProduct().getId}}" th:alt="${cartItem.getProduct().getName()}"/>
+    <p th:text="${cartItem.getProduct().getName()}"></p>
+    <p th:text="${cartItem.getQuantity()}"></p>
+</div>
+<p th:text="${totalPrice}"></p>
+</body>
+</html>

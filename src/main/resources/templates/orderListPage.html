@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>HAHAHAHAAH</title>
+    <title>Order</title>
 </head>
 <body>
-
+<h1>Transaction History</h1>
 <div th:if="${orderList.size() > 0}" th:each="order : ${orderList}">
     <h2 th:text="${order.getId()}"></h2>
     <div th:if="${order.getOrderItems().size() > 0}" th:each="orderItem : ${order.getOrderItems()}">
@@ -16,9 +16,12 @@
     <p th:text="${order.getDeliveryMethod()}"></p>
     <p th:text="${#temporals.format(order.getOrderDateTime())}"></p>
     <p th:text="${order.getPaymentMethod()}"></p>
-    <form th:action="@{'/order/' + ${order.getId()}}">
+    <form th:if="${isAdmin}" th:action="@{'/admin/get/order/' + ${order.getId()}}">
+        <button type="submit">See more..</button>
+    </form>
+    <form th:unless="${isAdmin}" th:action="@{'/admin/get/order/' + ${order.getId()}}">
         <button type="submit">See more..</button>
     </form>
 </div>
-
+<h2 th:unless="${orderList.size() > 0}">You've never been ordered anything... lol</h2>
 </body>

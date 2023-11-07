@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Detail </title>
+  <title>Detail Order</title>
   <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 <body>
+<h1>Detail Order</h1>
 <div th:if="${order != null}">
   <div class="container" th:each="orderItem : ${order.getOrderItems()}">
     <img th:src="@{'/api/images/1/' + ${orderItem.getProduct().getId()}}" th:alt="${orderItem.getProduct().getId()}"/>

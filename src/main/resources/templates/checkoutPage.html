@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Data Mahasiswa</title>
+    <title>Checkout</title>
     <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 <body>
+<h1>Checkout</h1>
 <div>
-
     <div class="container" th:if="${cart.getCartItems().size() > 0}" th:each="cartItem : ${cart.getCartItems()}">
         <img th:src="@{'/api/images/1/' + ${cartItem.getProduct().getId}}" th:alt="${cartItem.getProduct().getName()}"/>
         <p th:text="${cartItem.getProduct().getName()}"></p>
@@ -22,18 +22,18 @@
     <input th:field="*{totalPrice}" th:hidden="hidden"/>
 
     <label for="deliveryMethod"></label><select id="deliveryMethod" name="deliveryMethod">
-        <option th:value="'gosend'" th:text="'gosend'"></option>
-        <option th:value="'JNE'" th:text="'JNE'"></option>
-        <option th:value="'JNT'" th:text="'JNT'"></option>
-        <option th:value="'SiCepat'" th:text="'SiCepat'"></option>
-    </select>
+    <option th:value="'gosend'" th:text="'gosend'"></option>
+    <option th:value="'JNE'" th:text="'JNE'"></option>
+    <option th:value="'JNT'" th:text="'JNT'"></option>
+    <option th:value="'SiCepat'" th:text="'SiCepat'"></option>
+</select>
 
     <label for="paymentMethod"></label><select id="paymentMethod" name="paymentMethod">
-        <option th:value="'Credit Card'" th:text="'Credit Card'"></option>
-        <option th:value="'Debit Card'" th:text="'Debit Card'"></option>
-        <option th:value="'Gopay'" th:text="'Gopay'"></option>
-        <option th:value="'Alfamart'" th:text="'Alfamart'"></option>
-    </select>
+    <option th:value="'Credit Card'" th:text="'Credit Card'"></option>
+    <option th:value="'Debit Card'" th:text="'Debit Card'"></option>
+    <option th:value="'Gopay'" th:text="'Gopay'"></option>
+    <option th:value="'Alfamart'" th:text="'Alfamart'"></option>
+</select>
 
     <button type="submit">Confirm Checkout</button>
 </form>

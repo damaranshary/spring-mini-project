@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>Regsitration and Login</title>
+
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+</head>
+<body>
+<div>
+    <h2>Welcome, <span th:text="${user.getName()}"></span></h2>
+    <a th:href="@{/products}">Go to Product</a>
+    <br>
+    <a th:href="@{/cart}">Check your cart</a>
+    <br>
+    <a th:href="@{/profile}">See your Profile</a>
+    <br>
+    <a th:href="@{/order}">Find your Orders</a>
+    <br>
+    <br>
+    <a th:href="@{/logout}">or Logout</a>
+</div>
+
+</body>
+</html>

@@ -4,14 +4,22 @@
     <title>HAHAHAHAAHGAAAAAAAAA</title>
 </head>
 <body>
-<div th:object="${product}">
-    <p th:text="${product.getName()}"></p>
-    <p th:text="${product.getDescription()}"></p>
-    <p th:text="${product.getPrice()}"></p>
-    <div th:if="${product.getImages().size() > 0}" th:each="i : ${#numbers.sequence(1, product.getImages().size(), 1)}" >
+<div>
+
+    <div th:if="${product.getImages().size() > 0}" th:each="i : ${#numbers.sequence(1, product.getImages().size(), 1)}">
         <img th:src="@{'/api/images/' + ${i} + '/' + ${product.getId}}" alt="product-image"/>
         <p th:text="${i}"></p>
     </div>
+    <p th:text="${product.getName()}"></p>
+    <p th:text="${product.getDescription()}"></p>
+    <p th:text="${product.getPrice()}"></p>
 </div>
+
+<form th:action="@{/cart/add}" th:object="${cartItem}" th:method="post">
+    <input th:field="*{product}" name="product" id="product"/>
+    <label for="quantity">Jumlah produk: </label>
+    <input th:field="*{quantity}" name="quantity" id="quantity" type="number"/>
+    <button type="submit">Tambahkan ke keranjang</button>
+</form>
 
 </body>

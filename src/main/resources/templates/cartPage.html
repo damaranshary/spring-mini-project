@@ -5,11 +5,21 @@
     <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 <body>
-<div class="container" th:if="${cartItemList.size() > 0}" th:each="cartItem : ${cartItemList}">
-    <img th:src="@{'/api/images/1/' + ${cartItem.getProduct().getId}}" th:alt="${cartItem.getProduct().getName()}"/>
-    <p th:text="${cartItem.getProduct().getName()}"></p>
-    <p th:text="${cartItem.getQuantity()}"></p>
+<div>
+    <div class="container" th:if="${cart.getCartItems().size() > 0}" th:each="cartItem : ${cart.getCartItems()}">
+        <img th:src="@{'/api/images/1/' + ${cartItem.getProduct().getId}}" th:alt="${cartItem.getProduct().getName()}"/>
+        <p th:text="${cartItem.getProduct().getName()}"></p>
+        <p th:text="${cartItem.getQuantity()}"></p>
+        <form th:action="@{'/cart/delete/' + ${cartItem.getId}}">
+            <button type="submit">delete</button>
+        </form>
+    </div>
+    <p th:text="${cart.getTotalPrice()}"></p>
 </div>
-<p th:text="${totalPrice}"></p>
+<form th:if="${cart.getCartItems().size() > 0}" th:action="@{/checkout}" th:object="${cart}" method="post">
+    <input th:field="*{cartItems}" th:hidden="hidden"/>
+    <input th:field="*{totalPrice}" th:hidden="hidden"/>
+    <button type="submit">checkout</button>
+</form>
 </body>
 </html>

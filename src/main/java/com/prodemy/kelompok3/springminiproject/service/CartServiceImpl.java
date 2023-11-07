@@ -6,10 +6,12 @@ import com.prodemy.kelompok3.springminiproject.entity.Product;
 import com.prodemy.kelompok3.springminiproject.entity.User;
 import com.prodemy.kelompok3.springminiproject.repository.CartItemRepository;
 import com.prodemy.kelompok3.springminiproject.repository.CartRepository;
-import com.prodemy.kelompok3.springminiproject.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -21,29 +23,25 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private CartItemRepository cartItemRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
-
     @Override
-    public String addProductToCart(Product product, User user, Integer quantity) {
-        Cart cart = cartRepository.findByUser(user);
+    public String addProductToCart(Product product, String username, Integer quantity) {
+        Cart cart = cartRepository.findCartByUser_Username(username);
 
-        CartItem cartItem = cartItemRepository.findCartItemByCart_IdAndProduct_Id(product.getId(), cart.getId());
+        CartItem cartItem = cartItemRepository.findCartItemByCart_IdAndProduct_Id(cart.getId(), product.getId());
 
         if (cartItem != null) {
             cartItem.setQuantity(cartItem.getQuantity() + quantity);
             cartItemRepository.save(cartItem);
 
-            return "produk berhasil ditambahkan";
+        } else {
+            CartItem newCartItem = new CartItem();
+
+            newCartItem.setProduct(product);
+            newCartItem.setQuantity(quantity);
+            newCartItem.setCart(cart);
+
+            cartItemRepository.save(newCartItem);
         }
-
-        CartItem newCartItem = new CartItem();
-
-        newCartItem.setProduct(product);
-        newCartItem.setQuantity(quantity);
-        newCartItem.setCart(cart);
-
-        cartItemRepository.save(newCartItem);
 
         if (cart.getTotalPrice() == null) {
             cart.setTotalPrice(product.getPrice() * quantity);
@@ -66,9 +64,28 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart findCartByUsername(User user) {
-        return cartRepository.findByUser(user);
+    public void deleteCartItemById(Long id) {
+        CartItem cartItem = cartItemRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "NOT FOUND"));
+
+        cartItemRepository.deleteById(id);
+
+        updateTotalPriceInCartAfterDeleteCartItem(cartItem.getCart(), cartItem);
     }
 
+    private void updateTotalPriceInCartAfterDeleteCartItem(Cart cart, CartItem cartItem) {
+        long totalPrice = cart.getTotalPrice() - (cartItem.getQuantity() * cartItem.getProduct().getPrice());
 
+        if (totalPrice == 0) {
+            cart.setTotalPrice(null);
+        } else {
+            cart.setTotalPrice(totalPrice);
+        }
+
+        cartRepository.save(cart);
+    }
+
+    @Override
+    public Cart findCartByUsername(String username) {
+        return cartRepository.findCartByUser_Username(username);
+    }
 }

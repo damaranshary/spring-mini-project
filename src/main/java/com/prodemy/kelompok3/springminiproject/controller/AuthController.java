@@ -1,7 +1,6 @@
 package com.prodemy.kelompok3.springminiproject.controller;
 
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,40 +16,44 @@ import jakarta.validation.Valid;
 
 @Controller
 public class AuthController {
-	
+
+    @Autowired
 	private UserService userService;
 	
 	@GetMapping("/login")
-	public String loginForm() {
+	public String loginForm(Model model) {
+        User user = new User();
+        model.addAttribute("user", user);
 		return "login";
 	}
 	
-	@GetMapping("index")
-	public String home() {
-		return "index";
-	}
-	
 	// handler method to handle register user form submit request
-    @PostMapping("/register/save")
-    public String registration(@Valid @ModelAttribute("user") UserDto user,
+    @PostMapping("/registration")
+    public String registerUserAccount(@Valid @ModelAttribute("user") UserDto user,
                                BindingResult result,
                                Model model){
         User existing = userService.findByUsername(user.getUsername());
         if (existing != null) {
             result.rejectValue("email", null, "There is already an account registered with that email");
         }
+
         if (result.hasErrors()) {
             model.addAttribute("user", user);
-            return "register";
+            return "registration";
         }
+
         userService.saveUser(user);
-        return "redirect:/register?success";
+        return "redirect:/registration?success";
     }
 
-    @GetMapping("/users")
-    public String listRegisteredUsers(Model model){
-        List<UserDto> users = userService.findAllUsers();
-        model.addAttribute("users", users);
-        return "users";
+    @GetMapping("/registration")
+    public String registrationForm(Model model) {
+        User user = new User();
+
+        model.addAttribute("user", user);
+
+        return "registration";
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.prodemy.kelompok3.springminiproject.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,15 +14,20 @@ import jakarta.validation.Valid;
 
 public interface UserService {
 
-	User save(UserDto userDto);
-
 	User findByUsername(String username);
 
 	void saveUser(@Valid UserDto userDto);
 
-	List<UserDto> findAllUsers();
+	void updateUser(UserDto userDto);
 
-	UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+	List<UserDto> findAllUsers();
+	User findUserById(String userId);
+
+	User getCurrentUser();
+
+	void deleteUserById(String userId);
+
+//	UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
 	
 }

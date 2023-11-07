@@ -6,9 +6,9 @@ import com.prodemy.kelompok3.springminiproject.entity.User;
 
 public interface CartService {
 
-    String addProductToCart(Product product, String username, Integer quantity);
+    void addProductToCart(Product product, User user, Integer quantity);
 
-    Cart findCartByUsername(String username);
+    Cart findCartByUser(User user);
 
     Cart initializeCartForUser(User user);
 

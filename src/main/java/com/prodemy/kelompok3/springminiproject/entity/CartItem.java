@@ -27,6 +27,6 @@ public class CartItem {
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
 
-    private int quantity = 1;
+    private int quantity;
 
 }

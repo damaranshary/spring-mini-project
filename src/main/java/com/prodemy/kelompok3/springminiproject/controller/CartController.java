@@ -28,23 +28,25 @@ public class CartController {
     @PostMapping("/cart/add")
     public String addProductToCart(@RequestParam(name = "product") Product product,
                                  @RequestParam(name = "quantity") int quantity) {
-        // adding product to cart using temporary user
-        String username = "damaranshary";
+        User user = userService.getCurrentUser();
+        Cart cart = user.getCart();
 
-        String result = cartService.addProductToCart(product, username, quantity);
+        if (cart == null) {
+            cartService.initializeCartForUser(user);
+        }
 
-        System.out.println(result);
+        cartService.addProductToCart(product, user, quantity);
 
         return "redirect:/cart";
     }
 
     @GetMapping(path = "/cart")
     public String getCart(Model model) {
-        // get a cart by temporary user
-        Cart cart = cartService.findCartByUsername("damaranshary");
+        User user = userService.getCurrentUser();
+        Cart cart = user.getCart();
 
         if (cart == null) {
-            cartService.initializeCartForUser(userService.findByUsername("damaranshary"));
+            cartService.initializeCartForUser(user);
         }
 
         model.addAttribute("cart", cart);

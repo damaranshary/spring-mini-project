@@ -17,7 +17,21 @@ public interface ProductService {
 
     void updateProductWithoutImage(Product product);
 
-    List<Product> getAllProduct();
+    List<Product> findAllProduct();
+
+    List<Product> filterProductByNameAndMinPriceAndMaxPrice(String productName, Long minPrice, Long maxPrice);
+
+    List<Product> filterProductByName(String productName);
+
+    List<Product> filterProductByMinPrice(Long minPrice);
+
+    List<Product> filterProductByMaxPrice(Long maxPrice);
+
+    List<Product> filterProductByMinPriceAndMaxPrice(Long minPrice, Long maxPrice);
+
+    List<Product> filterProductByNameAndMinPrice(String productName, Long minPrice);
+
+    List<Product> filterProductByNameAndMaxPrice(String productName, Long maxPrice);
 
     void deleteProduct(String productId);
 }

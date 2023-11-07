@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface ProductImageService {
 
-    List<ProductImage> addImage(List<MultipartFile> files, Product product);
+    List<ProductImage> addProductImages(List<MultipartFile> files, Product product);
 
     void updateImage(MultipartFile file, String id) throws IOException;
 

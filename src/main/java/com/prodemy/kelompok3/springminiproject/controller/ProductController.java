@@ -1,5 +1,6 @@
 package com.prodemy.kelompok3.springminiproject.controller;
 
+import com.prodemy.kelompok3.springminiproject.entity.CartItem;
 import com.prodemy.kelompok3.springminiproject.entity.Product;
 import com.prodemy.kelompok3.springminiproject.entity.ProductImage;
 import com.prodemy.kelompok3.springminiproject.service.ProductImageService;
@@ -9,12 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -53,14 +52,67 @@ public class ProductController {
     public String getProductById(@PathVariable(name = "productId") String productId, Model model) {
         Product product = productService.findProductById(productId);
 
+        CartItem cartItem = new CartItem();
+        cartItem.setProduct(product);
+        cartItem.setQuantity(1);
+
         model.addAttribute("product", product);
+        model.addAttribute("cartItem", cartItem);
 
         return "productPage";
     }
 
     @GetMapping(path = "/products")
     public String getAllProduct(Model model) {
-        List<Product> productList = productService.getAllProduct();
+        List<Product> productList = productService.findAllProduct();
+
+        model.addAttribute("productList", productList);
+
+
+        return "allProductPage";
+    }
+
+    @GetMapping(path = "/products/filter")
+    public String getProductUsingFilter(@RequestParam(name = "query", required = false) String query,
+                                        @RequestParam(name = "minPrice", required = false) Long minPrice,
+                                        @RequestParam(name = "maxPrice", required = false) Long maxPrice, Model model) {
+        List<Product> productList;
+
+        if (minPrice != null) {
+            minPrice -= 1;
+        }
+
+        if (maxPrice != null) {
+            maxPrice += 1;
+        }
+
+        if (query == null && maxPrice == null && minPrice == null) {
+            // without filter
+            return "redirect:/products";
+        }
+
+        if (minPrice == null && maxPrice == null) {
+            // name
+            productList = productService.filterProductByName(query);
+        } else if (query == null && minPrice == null) {
+            // maxPrice
+            productList = productService.filterProductByMaxPrice(maxPrice);
+        } else if (query == null && maxPrice == null) {
+            // minPrice
+            productList = productService.filterProductByMinPrice(minPrice);
+        } else if (query == null) {
+            // minPrice && maxPrice
+            productList = productService.filterProductByMinPriceAndMaxPrice(minPrice, maxPrice);
+        } else if (minPrice == null) {
+            // name && maxPrice
+            productList = productService.filterProductByNameAndMaxPrice(query, maxPrice);
+        } else if (maxPrice == null) {
+            // name && minPrice
+            productList = productService.filterProductByNameAndMinPrice(query, minPrice);
+        } else {
+            // name, minPrice && maxPrice
+            productList = productService.filterProductByNameAndMinPriceAndMaxPrice(query, minPrice, maxPrice);
+        }
 
         model.addAttribute("productList", productList);
 

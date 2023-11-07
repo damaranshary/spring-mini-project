@@ -3,6 +3,7 @@ package com.prodemy.kelompok3.springminiproject.service;
 import com.prodemy.kelompok3.springminiproject.entity.Product;
 import com.prodemy.kelompok3.springminiproject.entity.ProductImage;
 import com.prodemy.kelompok3.springminiproject.repository.ProductImageRepository;
+import com.prodemy.kelompok3.springminiproject.service.ProductImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,10 @@ public class ProductImageServiceImpl implements ProductImageService {
     private ProductImageRepository productImageRepository;
 
     @Override
-    public List<ProductImage> addImage(List<MultipartFile> files, Product product) {
+    public List<ProductImage> addProductImages(List<MultipartFile> files, Product product) {
         return files.stream().map(multipartFile -> {
             try {
-                return uploadImage(multipartFile, product);
+                return addImage(multipartFile, product);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -43,7 +44,7 @@ public class ProductImageServiceImpl implements ProductImageService {
         return productImageRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "NOT FOUND"));
     }
 
-    private ProductImage uploadImage(MultipartFile file, Product product) throws IOException {
+    private ProductImage addImage(MultipartFile file, Product product) throws IOException {
         ProductImage image = new ProductImage();
 
         image.setId(UUID.randomUUID().toString());

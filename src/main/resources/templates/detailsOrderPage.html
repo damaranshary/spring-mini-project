@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Detail </title>
+  <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+<div th:if="${order != null}">
+  <div class="container" th:each="orderItem : ${order.getOrderItems()}">
+    <img th:src="@{'/api/images/1/' + ${orderItem.getProduct().getId()}}" th:alt="${orderItem.getProduct().getId()}"/>
+    <p th:text="${orderItem.getProduct().getName()}"></p>
+    <p th:text="${orderItem.getProduct().getDescription()}"></p>
+    <p th:text="${orderItem.getProduct().getPrice()}"></p>
+    <p th:text="${orderItem.getQuantity()}"></p>
+  </div>
+  <div>
+    <p th:text="${order.getDeliveryMethod()}"></p>
+    <p th:text="${#temporals.format(order.getOrderDateTime())}"></p>
+    <p th:text="${order.getPaymentMethod()}"></p>
+  </div>
+  <p th:text="${order.getTotalPrice()}"></p>
+</div>
+</body>
+</html>

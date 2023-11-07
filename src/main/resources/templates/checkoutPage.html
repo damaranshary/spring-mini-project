@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Data Mahasiswa</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+<body>
+<div>
+
+    <div class="container" th:if="${cart.getCartItems().size() > 0}" th:each="cartItem : ${cart.getCartItems()}">
+        <img th:src="@{'/api/images/1/' + ${cartItem.getProduct().getId}}" th:alt="${cartItem.getProduct().getName()}"/>
+        <p th:text="${cartItem.getProduct().getName()}"></p>
+        <p th:text="${cartItem.getQuantity()}"></p>
+        <form th:action="@{'/cart/delete/' + ${cartItem.getId}}">
+            <button type="submit">delete</button>
+        </form>
+    </div>
+    <p th:text="${cart.getTotalPrice()}"></p>
+</div>
+<form th:action="@{/order/add}" th:object="${cart}" method="post">
+    <input th:field="*{cartItems}" th:hidden="hidden"/>
+    <input th:field="*{totalPrice}" th:hidden="hidden"/>
+
+    <label for="deliveryMethod"></label><select id="deliveryMethod" name="deliveryMethod">
+        <option th:value="'gosend'" th:text="'gosend'"></option>
+        <option th:value="'JNE'" th:text="'JNE'"></option>
+        <option th:value="'JNT'" th:text="'JNT'"></option>
+        <option th:value="'SiCepat'" th:text="'SiCepat'"></option>
+    </select>
+
+    <label for="paymentMethod"></label><select id="paymentMethod" name="paymentMethod">
+        <option th:value="'Credit Card'" th:text="'Credit Card'"></option>
+        <option th:value="'Debit Card'" th:text="'Debit Card'"></option>
+        <option th:value="'Gopay'" th:text="'Gopay'"></option>
+        <option th:value="'Alfamart'" th:text="'Alfamart'"></option>
+    </select>
+
+    <button type="submit">Confirm Checkout</button>
+</form>
+</body>
+</html>

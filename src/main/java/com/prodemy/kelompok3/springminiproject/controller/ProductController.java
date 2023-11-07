@@ -3,7 +3,6 @@ package com.prodemy.kelompok3.springminiproject.controller;
 import com.prodemy.kelompok3.springminiproject.entity.CartItem;
 import com.prodemy.kelompok3.springminiproject.entity.Product;
 import com.prodemy.kelompok3.springminiproject.entity.ProductImage;
-import com.prodemy.kelompok3.springminiproject.service.ProductImageService;
 import com.prodemy.kelompok3.springminiproject.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -23,8 +22,6 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private ProductImageService productImageService;
 
     @GetMapping(path = "/api/images/1/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<byte[]> getFirstImage(@PathVariable(name = "productId") String productId) {
@@ -47,9 +44,120 @@ public class ProductController {
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(productImages.get(2).getData());
     }
 
-
-    @GetMapping(path = "/products/{productId}")
+    @GetMapping(path = "/product/{productId}")
     public String getProductById(@PathVariable(name = "productId") String productId, Model model) {
+        model.addAttribute("isAdmin",false);
+        return getProductByIdWrapper(productId, model);
+    }
+
+    @GetMapping(path = "/products")
+    public String getAllProduct(Model model) {
+        List<Product> productList = productService.findAllProduct();
+
+        model.addAttribute("productList", productList);
+        model.addAttribute("isAdmin", false);
+
+        return "productListPage";
+    }
+
+    @GetMapping(path = "/products/filter")
+    public String getProductUsingFilter(@RequestParam(name = "query", required = false) String query,
+                                        @RequestParam(name = "minPrice", required = false) Long minPrice,
+                                        @RequestParam(name = "maxPrice", required = false) Long maxPrice, Model model) {
+        model.addAttribute("isAdmin", false);
+        return productFilterWrapper(query, minPrice, maxPrice, model);
+    }
+
+
+    // this is the borderline between user and admin controller
+    @GetMapping(path = "/admin/get/products")
+    public String getAllProductFromAdmin(Model model) {
+        List<Product> productList = productService.findAllProduct();
+
+        model.addAttribute("productList", productList);
+        model.addAttribute("isAdmin", true);
+
+        return "productListPage";
+    }
+
+
+    @GetMapping(path = "/admin/get/products/filter")
+    public String getProductUsingFilterFromAdmin(@RequestParam(name = "query", required = false) String query,
+                                                @RequestParam(name = "minPrice", required = false) Long minPrice,
+                                                @RequestParam(name = "maxPrice", required = false) Long maxPrice, Model model) {
+        model.addAttribute("isAdmin", true);
+        return productFilterWrapper(query, minPrice, maxPrice, model);
+    }
+
+    @GetMapping(path = "/admin/get/product/{productId}")
+    public String getProductByIdAdmin(@PathVariable(name = "productId") String productId, Model model) {
+        model.addAttribute("isAdmin", true);
+        return getProductByIdWrapper(productId, model);
+    }
+
+    @GetMapping(path = "/admin/add/product")
+    public String addProductPage(Model model) {
+        Product product = new Product();
+
+        model.addAttribute("product", product);
+
+        return "addProductPage";
+    }
+
+    @PostMapping(path = "/admin/add/product", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String addProduct(@RequestParam(name = "name") String name, @RequestParam(name = "description") String description, @RequestParam(name = "price") Long price, @RequestPart(name = "images") List<MultipartFile> images) {
+        Product product = new Product();
+        product.setName(name);
+        product.setDescription(description);
+        product.setPrice(price);
+
+        product = productService.addProduct(images, product);
+
+        return "redirect:/admin/get/product/" + product.getId();
+    }
+
+    @GetMapping(path = "/admin/update/product/{productId}")
+    public String updateProductPage(@PathVariable(name = "productId") String productId, Model model) {
+        if (productId == null) {
+            return "notFound404Page";
+        }
+        Product product = productService.findProductById(productId);
+
+        model.addAttribute("product", product);
+
+        return "updateProductPage";
+    }
+
+    @PostMapping(path = "/admin/update/product/{productId}")
+    public String updateProduct(@PathVariable(name = "productId") String productId,
+                                @RequestParam(name = "name") String name,
+                                @RequestParam(name = "description") String description,
+                                @RequestParam(name = "price") Long price,
+                                @RequestPart(name = "images", required = false) List<MultipartFile> images) throws IOException {
+        Product product = new Product();
+        product.setId(productId);
+        product.setName(name);
+        product.setDescription(description);
+        product.setPrice(price);
+
+        if (Objects.equals(images.get(0).getOriginalFilename(), "")) {
+            productService.updateProductWithoutImage(product);
+        } else {
+            productService.updateProduct(images, product);
+        }
+
+        return "redirect:/admin/update/product/" + productId;
+    }
+
+    @GetMapping(path = "/admin/delete/product/{productId}")
+    public String deleteProduct(@PathVariable(name = "productId") String productId) {
+        productService.deleteProduct(productId);
+
+        return "redirect:/admin/get/products";
+    }
+
+    //this is a wrapper method
+    private String getProductByIdWrapper(@PathVariable(name = "productId") String productId, Model model) {
         Product product = productService.findProductById(productId);
 
         CartItem cartItem = new CartItem();
@@ -59,23 +167,10 @@ public class ProductController {
         model.addAttribute("product", product);
         model.addAttribute("cartItem", cartItem);
 
-        return "productPage";
+        return "detailsProductPage";
     }
 
-    @GetMapping(path = "/products")
-    public String getAllProduct(Model model) {
-        List<Product> productList = productService.findAllProduct();
-
-        model.addAttribute("productList", productList);
-
-
-        return "allProductPage";
-    }
-
-    @GetMapping(path = "/products/filter")
-    public String getProductUsingFilter(@RequestParam(name = "query", required = false) String query,
-                                        @RequestParam(name = "minPrice", required = false) Long minPrice,
-                                        @RequestParam(name = "maxPrice", required = false) Long maxPrice, Model model) {
+    private String productFilterWrapper(@RequestParam(name = "query", required = false) String query, @RequestParam(name = "minPrice", required = false) Long minPrice, @RequestParam(name = "maxPrice", required = false) Long maxPrice, Model model) {
         List<Product> productList;
 
         if (minPrice != null) {
@@ -116,67 +211,6 @@ public class ProductController {
 
         model.addAttribute("productList", productList);
 
-        return "allProductPage";
-    }
-
-    @GetMapping(path = "/products/add")
-    public String addProductPage(Model model) {
-        Product product = new Product();
-
-        model.addAttribute("product", product);
-
-        return "addProductPage";
-    }
-
-    @PostMapping(path = "/products/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String addProduct(@RequestParam(name = "name") String name, @RequestParam(name = "description") String description, @RequestParam(name = "price") Long price, @RequestPart(name = "images") List<MultipartFile> images) {
-        Product product = new Product();
-        product.setName(name);
-        product.setDescription(description);
-        product.setPrice(price);
-
-        product = productService.addProduct(images, product);
-
-        return "redirect:/products/" + product.getId();
-    }
-
-    @GetMapping(path = "/products/update/{productId}")
-    public String updateProductPage(@PathVariable(name = "productId") String productId, Model model) {
-        if (productId == null) {
-            return "notFound404Page";
-        }
-        Product product = productService.findProductById(productId);
-
-        model.addAttribute("product", product);
-
-        return "updateProductPage";
-    }
-
-    @PostMapping(path = "/products/update/{productId}")
-    public String updateProduct(@PathVariable(name = "productId") String productId,
-                                @RequestParam(name = "name") String name,
-                                @RequestParam(name = "description") String description,
-                                @RequestParam(name = "price") Long price,
-                                @RequestPart(name = "images", required = false) List<MultipartFile> images, Model model) throws IOException {
-        Product product = new Product();
-        product.setId(productId);
-        product.setName(name);
-        product.setDescription(description);
-        product.setPrice(price);
-
-        if (Objects.equals(images.get(0).getOriginalFilename(), "")) {
-            productService.updateProductWithoutImage(product);
-        } else {
-            productService.updateProduct(images, product);
-        };
-
-        return "redirect:/products/" + productId;
-    }
-
-    @GetMapping(path = "/products/delete/{productId}")
-    public String deleteProduct(@PathVariable(name = "productId") String productId) {
-        productService.deleteProduct(productId);
-
-        return "redirect:/products";
+        return "productListWithFilterPage";
     }
 }

@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Data Mahasiswa</title>
+    <title>Cart</title>
     <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
 <body>
-<div>
-    <div class="container" th:if="${cart.getCartItems().size() > 0}" th:each="cartItem : ${cart.getCartItems()}">
-        <img th:src="@{'/api/images/1/' + ${cartItem.getProduct().getId}}" th:alt="${cartItem.getProduct().getName()}"/>
-        <p th:text="${cartItem.getProduct().getName()}"></p>
-        <p th:text="${cartItem.getQuantity()}"></p>
-        <form th:action="@{'/cart/delete/' + ${cartItem.getId}}">
-            <button type="submit">delete</button>
-        </form>
+<h1>Cart</h1>
+<div th:if="${cart.getCartItems().size() > 0}">
+    <div>
+        <div class="container" th:each="cartItem : ${cart.getCartItems()}">
+            <img th:src="@{'/api/images/1/' + ${cartItem.getProduct().getId}}"
+                 th:alt="${cartItem.getProduct().getName()}"/>
+            <p th:text="${cartItem.getProduct().getName()}"></p>
+            <p th:text="${cartItem.getQuantity()}"></p>
+            <form th:action="@{'/cart/delete/' + ${cartItem.getId}}">
+                <button type="submit">delete</button>
+            </form>
+        </div>
+        <p th:text="${cart.getTotalPrice()}"></p>
     </div>
-    <p th:text="${cart.getTotalPrice()}"></p>
+    <form  th:action="@{/order/checkout}" th:object="${cart}" method="post">
+        <input th:field="*{cartItems}" th:hidden="hidden"/>
+        <input th:field="*{totalPrice}" th:hidden="hidden"/>
+        <button type="submit">checkout</button>
+    </form>
 </div>
-<form th:if="${cart.getCartItems().size() > 0}" th:action="@{/checkout}" th:object="${cart}" method="post">
-    <input th:field="*{cartItems}" th:hidden="hidden"/>
-    <input th:field="*{totalPrice}" th:hidden="hidden"/>
-    <button type="submit">checkout</button>
-</form>
+<h2 th:unless="${cart.getCartItems().size() > 0}">Cart is empty</h2>
 </body>
 </html>

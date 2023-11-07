@@ -14,7 +14,8 @@ import java.util.List;
 //import org.springframework.security.core.GrantedAuthority;
 
 
-
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -24,25 +25,25 @@ public class User {
     @Id
     private String id;
 
-    @Column(unique = true)
-    @NotNull
-    @Getter
-    @Setter
+    @Column(unique = true, nullable = false)
     private String username;
-    
-    @Getter
-    @Setter
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @NotNull
+    private String name;
+
     @NotNull
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    private String address;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
-            name="users_roles",
-            joinColumns={@JoinColumn(name="USER_ID", referencedColumnName="ID")},
-            inverseJoinColumns={@JoinColumn(name="ROLE_ID", referencedColumnName="ID")})
-    
-    @Getter
-    @Setter
+            name= "users_roles",
+            joinColumns={@JoinColumn(name= "user_id", referencedColumnName= "id")},
+            inverseJoinColumns={@JoinColumn(name= "role_id", referencedColumnName= "id")})
     private List<Role> roles = new ArrayList<>();
 
     @OneToOne(mappedBy = "user")

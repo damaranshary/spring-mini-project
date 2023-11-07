@@ -1,29 +1,31 @@
 package com.prodemy.kelompok3.springminiproject.dto;
 
-import com.prodemy.kelompok3.springminiproject.entity.User;
-import lombok.Value;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserDto {
 
-/**
- * DTO for {@link User}
- */
-@Value
-public class UserDto implements Serializable {
-    String id;
-    String username;
-    String password;
-    //String role;
-	public Object setUsername;
-	public UserDto(String id, String username, String password, Object setUsername) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.password = password;
-		this.setUsername = setUsername;
-	}
-	
-	
-	
-	
+    private String id;
+
+    @NotEmpty
+    private String username;
+
+    @NotEmpty
+    @Pattern(regexp = "^[a-zA-Z ]*$")
+    private String name;
+
+    @NotEmpty
+    @Email
+    private String email;
+
+    private String password;
+
+    private String address;
 }

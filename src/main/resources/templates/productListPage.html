@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Products</title>
+</head>
+<body>
+<h1>All Products</h1>
+<form th:action="@{/products/filter}">
+    <label for="query">Search</label>
+    <input type="text" name="query" id="query"/>
+    <label for="minPrice">Minimum Price</label>
+    <input type="number" name="minPrice" id="minPrice"/>
+    <label for="maxPrice">Maximum Price</label>
+    <input type="number" name="maxPrice" id="maxPrice"/>
+    <button type="submit">Search with Filter</button>
+</form>
+<br>
+<br>
+
+<a th:if="${isAdmin}" th:href="@{/admin/add/product}">
+    <button>Add Product</button>
+</a>
+
+<div th:if="${productList.size() > 0}" th:each="product : ${productList}">
+    <p th:text="${product.getName()}"></p>
+    <p th:text="${product.getDescription()}"></p>
+    <p th:text="${product.getPrice()}"></p>
+    <div th:if="${product.getImages().size() > 0}" th:each="i : ${#numbers.sequence(1, product.getImages().size(), 1)}">
+        <img th:src="@{'/api/images/' + ${i} + '/' + ${product.getId}}" alt="product-image"/>
+    </div>
+    <div th:if="${isAdmin}">
+        <a th:href="@{'/admin/get/product/' + ${product.getId()}}">
+            <button>See more..</button>
+        </a>
+        <br>
+        <a th:href="@{'/admin/update/product/' + ${product.getId()}}">
+            <button>Edit</button>
+        </a>
+    </div>
+    <a th:unless="${isAdmin}" th:href="@{'/product/' + ${product.getId()} }">
+        <button>See more..</button>
+    </a>
+
+
+</div>
+<h2 th:unless="${productList.size() > 0}">Product not found</h2>
+
+</body>

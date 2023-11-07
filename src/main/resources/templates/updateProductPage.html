@@ -4,7 +4,7 @@
     <title>HAHAHAHAAHGAAAAAAAAA</title>
 </head>
 <body>
-<form th:action="@{'/products/update/' + ${product.getId()}}" th:object="${product}" method="post"
+<form th:action="@{'/admin/update/product/' + ${product.getId()}}" th:object="${product}" method="post"
       enctype="multipart/form-data">
     <label for="name">Nama</label>
     <input type="text" name="name" id="name" th:field="*{name}" required/>
@@ -14,11 +14,11 @@
     <input type="number" name="price" id="price" th:field="*{price}" required/>
     <div th:if="${product.getImages().size() > 0}" th:each="i : ${#numbers.sequence(1, product.getImages().size(), 1)}">
         <img th:src="@{'/api/images/' + ${i} + '/' + ${product.getId}}" alt="product-image"/>
-        <p th:text="${i}"></p>
     </div>
     <input type="file" multiple name="images" id="images" accept="image/jpeg">
-    <button type="submit">Submit</button>
-    <a th:href="@{/products/delete/{productId} (productId=${product.getId()})}">Hapus
+    <button type="submit">Update</button>
+    <a th:href="@{/admin/delete/product/{productId} (productId=${product.getId()})}">
+        <button>Delete</button>
     </a>
 </form>
 

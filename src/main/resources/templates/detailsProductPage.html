@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>HAHAHAHAAHGAAAAAAAAA</title>
+    <title>Detail Product</title>
 </head>
 <body>
+<h1>Detail Product</h1>
 <div>
-
     <div th:if="${product.getImages().size() > 0}" th:each="i : ${#numbers.sequence(1, product.getImages().size(), 1)}">
         <img th:src="@{'/api/images/' + ${i} + '/' + ${product.getId}}" alt="product-image"/>
-        <p th:text="${i}"></p>
     </div>
     <p th:text="${product.getName()}"></p>
     <p th:text="${product.getDescription()}"></p>
     <p th:text="${product.getPrice()}"></p>
 </div>
 
-<form th:action="@{/cart/add}" th:object="${cartItem}" th:method="post">
-    <input th:field="*{product}" name="product" id="product"/>
+<a th:if="${isAdmin}" th:href="@{'/admin/update/product/' + ${product.getId()}}">
+    <button>Edit</button>
+</a>
+
+<form th:unless="${isAdmin}" th:action="@{/cart/add}" th:object="${cartItem}" th:method="post">
+    <input th:field="*{product}" name="product" id="product" hidden="hidden"/>
     <label for="quantity">Jumlah produk: </label>
     <input th:field="*{quantity}" name="quantity" id="quantity" type="number"/>
     <button type="submit">Tambahkan ke keranjang</button>

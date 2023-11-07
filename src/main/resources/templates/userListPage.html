@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>User List Page</title>
+</head>
+<body>
+<div th:if="${userList.size() > 0}" th:each="user : ${userList}">
+  <p th:text="${user.getName()}"></p>
+  <p th:text="${user.getEmail()}"></p>
+  <a th:href="@{'/admin/get/user/' + ${user.getId()} }" >
+    <button>See more..</button>
+  </a>
+  <br>
+  <a th:href="@{'/admin/update/user/' + ${user.getId()} }" >
+    <button>Edit</button>
+  </a>
+  <br>
+  <a th:href="@{'/admin/delete/user/' + ${user.getId()} }" >
+    <button>Delete</button>
+  </a>
+</div>
+</body>
+</html>

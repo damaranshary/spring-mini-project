@@ -25,15 +25,10 @@ public class OrderServiceImpl implements OrderService {
     private OrderItemRepository orderItemRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private CartRepository cartRepository;
 
     @Override
-    public void addOrder(Cart cart, String username, String deliveryMethod, String paymentMethod) {
-        User user = userRepository.findByUsername(username);
-
+    public void addOrder(Cart cart, User user, String deliveryMethod, String paymentMethod) {
         if (user == null) {
             throw  new ResponseStatusException(HttpStatus.NOT_FOUND, "NOT FOUND");
         }
@@ -53,14 +48,18 @@ public class OrderServiceImpl implements OrderService {
 
         order.setOrderItems(convertCartItemsToOrderItems(cart.getCartItems(), order));
 
-        cartRepository.delete(cartRepository.findCartByUser_Username(username));
+        cartRepository.delete(cartRepository.findCartByUser(user));
     }
 
     @Override
-    public List<Order> findOrdersHistoryByUsername(String username) {
-        User user = userRepository.findByUsername(username);
+    public List<Order> findOrdersHistoryByUser(User user) {
 
         return orderRepository.findAllByUser(user);
+    }
+
+    @Override
+    public List<Order> findAllOrder() {
+        return orderRepository.findAll();
     }
 
     @Override

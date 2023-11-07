@@ -31,15 +31,15 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @Column(name = "total_price")
+    @Column(name = "total_price", nullable = false)
     private Long totalPrice;
 
-    @Column(name = "order_date_time")
+    @Column(name = "order_date_time", nullable = false)
     private LocalDateTime orderDateTime;
 
-    @Column(name = "delivery_method")
+    @Column(name = "delivery_method", nullable = false)
     private String deliveryMethod;
 
-    @Column(name = "payment_method")
+    @Column(name = "payment_method", nullable = false)
     private String paymentMethod;
 }

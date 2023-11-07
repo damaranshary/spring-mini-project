@@ -21,12 +21,14 @@ public class ProductImage {
     @Id
     private String id;
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String type;
 
     @Lob
-    @Column(name = "data", columnDefinition = "BLOB")
+    @Column(name = "data", columnDefinition = "BLOB", nullable = false)
     private byte[] data;
     
     @ManyToOne(cascade = CascadeType.ALL)

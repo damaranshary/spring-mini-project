@@ -30,8 +30,6 @@ public class Product {
 
     @NotNull
     private Long price;
-    
-    
 
     @JsonManagedReference
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

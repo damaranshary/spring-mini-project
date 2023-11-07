@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>HAHAHAHAAH</title>
+  <title>Add Product</title>
 </head>
 <body>
-
-<form th:action="@{/products/add}" th:object="${product}" enctype="multipart/form-data" method="post">
+<h1>Add Product</h1>
+<form th:action="@{/admin/add/product}" th:object="${product}" enctype="multipart/form-data" method="post">
   <label for="name">Nama Product</label>
   <input type="text" name="description" id="name" th:field="*{name}" required/>
   <label for="description">Deskripsi</label>

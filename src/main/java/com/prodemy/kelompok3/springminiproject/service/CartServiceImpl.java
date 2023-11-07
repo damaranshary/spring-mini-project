@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,8 +23,12 @@ public class CartServiceImpl implements CartService {
     private CartItemRepository cartItemRepository;
 
     @Override
-    public String addProductToCart(Product product, String username, Integer quantity) {
-        Cart cart = cartRepository.findCartByUser_Username(username);
+    public void addProductToCart(Product product, User user, Integer quantity) {
+        Cart cart = cartRepository.findCartByUser(user);
+
+        if (cart == null) {
+            initializeCartForUser(user);
+        }
 
         CartItem cartItem = cartItemRepository.findCartItemByCart_IdAndProduct_Id(cart.getId(), product.getId());
 
@@ -50,8 +53,6 @@ public class CartServiceImpl implements CartService {
         }
 
         cartRepository.save(cart);
-
-        return "produk berhasil ditambahkan";
     }
 
     @Override
@@ -85,7 +86,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart findCartByUsername(String username) {
-        return cartRepository.findCartByUser_Username(username);
+    public Cart findCartByUser(User user) {
+        return cartRepository.findCartByUser(user);
     }
 }

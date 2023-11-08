@@ -13,14 +13,15 @@
 <body>
 <div>
 	<h2>Welcome,  <span th:text="${user.getName()}"></span></h2>
-	<br>
 	<h5>you are logged in as administrator, good luck</h5>
 	<br>
 	<br>
 	<a th:href="@{/admin/get/products}">Check products</a>
+	<span th:text="${' or '}"></span>
 	<a th:href="@{/admin/add/product}">Add some Products</a>
 	<br>
 	<a th:href="@{/admin/get/users}">Check users</a>
+	<span th:text="${' or '}"></span>
 	<a th:href="@{/admin/add/user}">Add some Users</a>
 	<br>
 	<a th:href="@{/admin/get/orders}">Find an Order</a>

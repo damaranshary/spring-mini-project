@@ -20,8 +20,8 @@
                 <div class="alert alert-info">Your profile has successfully changed</div>
             </div>
 
-            <h1>Update User</h1>
-            <form th:action="@{/admin/update/user}" method="post" th:object="${user}">
+            <h1>Update Profile</h1>
+            <form th:action="@{/profile/update}" method="post" th:object="${user}">
                 <div class="form-group">
                     <label class="control-label" for="username">Username</label>
                     <input id="username" class="form-control" th:field="*{username}" required autofocus="autofocus"/>

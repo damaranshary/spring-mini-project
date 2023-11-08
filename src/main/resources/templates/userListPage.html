@@ -4,9 +4,10 @@
   <title>User List Page</title>
 </head>
 <body>
+<a th:href="@{/admin/add/user}"><button>Add new user</button></a>
 <div th:if="${userList.size() > 0}" th:each="user : ${userList}">
-  <p th:text="${user.getName()}"></p>
-  <p th:text="${user.getEmail()}"></p>
+  <p>Name : <span th:text="${user.getName()}"></span></p>
+  <p>Email : <span th:text="${user.getEmail()}"></span></p>
   <a th:href="@{'/admin/get/user/' + ${user.getId()} }" >
     <button>See more..</button>
   </a>
@@ -19,5 +20,7 @@
     <button>Delete</button>
   </a>
 </div>
+<br>
+<a th:href="@{/}"><button>Back to Home</button></a>
 </body>
 </html>

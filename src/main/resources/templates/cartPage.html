@@ -10,14 +10,16 @@
     <div>
         <div class="container" th:each="cartItem : ${cart.getCartItems()}">
             <img th:src="@{'/api/images/1/' + ${cartItem.getProduct().getId}}"
-                 th:alt="${cartItem.getProduct().getName()}"/>
+                 th:alt="${cartItem.getProduct().getName()}"
+                 style="width: 150px; height: 150px"/>
             <p th:text="${cartItem.getProduct().getName()}"></p>
-            <p th:text="${cartItem.getQuantity()}"></p>
+            <p>Rp. <span th:text="${cartItem.getProduct().getPrice()}"></span></p>
+            <p>Quantity : <span th:text="${cartItem.getQuantity()}"></span></p>
             <form th:action="@{'/cart/delete/' + ${cartItem.getId}}">
                 <button type="submit">delete</button>
             </form>
         </div>
-        <p th:text="${cart.getTotalPrice()}"></p>
+        <p>Total Price: Rp. <span th:text="${cart.getTotalPrice()}"></span></p>
     </div>
     <form  th:action="@{/order/checkout}" th:object="${cart}" method="post">
         <input th:field="*{cartItems}" th:hidden="hidden"/>
@@ -27,4 +29,7 @@
 </div>
 <h2 th:unless="${cart.getCartItems().size() > 0}">Cart is empty</h2>
 </body>
+
+<br>
+<a th:href="@{/}"><button>Back to Home</button></a>
 </html>

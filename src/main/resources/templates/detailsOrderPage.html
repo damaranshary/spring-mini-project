@@ -8,18 +8,27 @@
 <h1>Detail Order</h1>
 <div th:if="${order != null}">
   <div class="container" th:each="orderItem : ${order.getOrderItems()}">
-    <img th:src="@{'/api/images/1/' + ${orderItem.getProduct().getId()}}" th:alt="${orderItem.getProduct().getId()}"/>
+    <img th:src="@{'/api/images/1/' + ${orderItem.getProduct().getId()}}" th:alt="${orderItem.getProduct().getName()}" style="width: 150px; height: 150px"/>
     <p th:text="${orderItem.getProduct().getName()}"></p>
     <p th:text="${orderItem.getProduct().getDescription()}"></p>
-    <p th:text="${orderItem.getProduct().getPrice()}"></p>
-    <p th:text="${orderItem.getQuantity()}"></p>
+    <p>Rp. <span th:text="${orderItem.getProduct().getPrice()}"></span></p>
+    <p>Quantity : <span th:text="${orderItem.getQuantity()}"></span></p>
   </div>
+  <br>
   <div>
-    <p th:text="${order.getDeliveryMethod()}"></p>
-    <p th:text="${#temporals.format(order.getOrderDateTime())}"></p>
-    <p th:text="${order.getPaymentMethod()}"></p>
+    <p>Payment method : <span th:text="${order.getPaymentMethod()}"></span></p>
+    <p>Delivery method : <span th:text="${order.getDeliveryMethod()}"></span></p>
+    <p>Date Order :<span th:text="${#temporals.format(order.getOrderDateTime())}"></span></p>
   </div>
-  <p th:text="${order.getTotalPrice()}"></p>
+  <br>
+  <div th:if="${isAdmin}">
+    <p>by <span th:text="${order.getUser().getName()}"></span></p>
+    <p>Email : <span th:text="${order.getUser().getEmail()}"></span></p>
+  </div>
+  <p>Total Payment : Rp. <span th:text="${order.getTotalPrice()}"></span></p>
+  <br>
+  <a th:if="${isAdmin}" th:href="@{/admin/get/orders}"><button>Back to order list</button></a>
+  <a th:unless="${isAdmin}" th:href="@{/order}"><button>Back to transaction history</button></a>
 </div>
 </body>
 </html>

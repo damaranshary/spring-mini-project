@@ -22,12 +22,12 @@
 </a>
 
 <div th:if="${productList.size() > 0}" th:each="product : ${productList}">
+    <div th:if="${product.getImages().size() > 0}" th:each="i : ${#numbers.sequence(1, product.getImages().size(), 1)}">
+        <img th:src="@{'/api/images/' + ${i} + '/' + ${product.getId}}" alt="product-image" style="width: 100px; height: 100px"/>
+    </div>
     <p th:text="${product.getName()}"></p>
     <p th:text="${product.getDescription()}"></p>
     <p th:text="${product.getPrice()}"></p>
-    <div th:if="${product.getImages().size() > 0}" th:each="i : ${#numbers.sequence(1, product.getImages().size(), 1)}">
-        <img th:src="@{'/api/images/' + ${i} + '/' + ${product.getId}}" alt="product-image"/>
-    </div>
     <div th:if="${isAdmin}">
         <a th:href="@{'/admin/get/product/' + ${product.getId()}}">
             <button>See more..</button>
@@ -41,8 +41,9 @@
         <button>See more..</button>
     </a>
 
-
 </div>
 <h2 th:unless="${productList.size() > 0}">Product not found</h2>
 
+<br>
+<a th:href="@{/}"><button>Back to Home</button></a>
 </body>

@@ -7,11 +7,11 @@
 <h1>Detail Product</h1>
 <div>
     <div th:if="${product.getImages().size() > 0}" th:each="i : ${#numbers.sequence(1, product.getImages().size(), 1)}">
-        <img th:src="@{'/api/images/' + ${i} + '/' + ${product.getId}}" alt="product-image"/>
+        <img th:src="@{'/api/images/' + ${i} + '/' + ${product.getId}}" alt="product-image" style="width: 150px; height: 150px"/>
     </div>
     <p th:text="${product.getName()}"></p>
     <p th:text="${product.getDescription()}"></p>
-    <p th:text="${product.getPrice()}"></p>
+    <p>Rp. <span th:text="${product.getPrice()}"></span></p>
 </div>
 
 <a th:if="${isAdmin}" th:href="@{'/admin/update/product/' + ${product.getId()}}">
@@ -20,9 +20,11 @@
 
 <form th:unless="${isAdmin}" th:action="@{/cart/add}" th:object="${cartItem}" th:method="post">
     <input th:field="*{product}" name="product" id="product" hidden="hidden"/>
-    <label for="quantity">Jumlah produk: </label>
+    <label for="quantity">Quantity </label>
     <input th:field="*{quantity}" name="quantity" id="quantity" type="number"/>
-    <button type="submit">Tambahkan ke keranjang</button>
+    <button type="submit">Add to cart</button>
 </form>
-
+<br>
+<a th:if="${isAdmin}" th:href="@{/admin/get/products}"><button>Back to Product List</button></a>
+<a th:unless="${isAdmin}" th:href="@{/products}"><button>Back to Product List</button></a>
 </body>

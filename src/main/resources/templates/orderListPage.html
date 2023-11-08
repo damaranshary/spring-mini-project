@@ -6,22 +6,25 @@
 <body>
 <h1>Transaction History</h1>
 <div th:if="${orderList.size() > 0}" th:each="order : ${orderList}">
-    <h2 th:text="${order.getId()}"></h2>
+    <h4 th:text="${order.getId()}"></h4>
     <div th:if="${order.getOrderItems().size() > 0}" th:each="orderItem : ${order.getOrderItems()}">
         <p th:text="${orderItem.getProduct().getName()}"></p>
-        <p th:text="${orderItem.getProduct().getPrice()}"></p>
-        <p th:text="${orderItem.getQuantity()}"></p>
+        <p>Rp. <span th:text="${orderItem.getProduct().getPrice()}"></span></p>
+        <p>Quantity : <span th:text="${orderItem.getQuantity()}"></span></p>
     </div>
-    <p th:text="${order.getTotalPrice()}"></p>
-    <p th:text="${order.getDeliveryMethod()}"></p>
-    <p th:text="${#temporals.format(order.getOrderDateTime())}"></p>
-    <p th:text="${order.getPaymentMethod()}"></p>
+    <p>Total payment : <span th:text="${order.getTotalPrice()}"></span></p>
+    <p>Payment method : <span th:text="${order.getPaymentMethod()}"></span></p>
+    <p>Delivery method : <span th:text="${order.getDeliveryMethod()}"></span></p>
+    <p>Order Date : <span th:text="${#temporals.format(order.getOrderDateTime())}"></span></p>
+    <p th:if="${isAdmin}">by <span th:text="${order.getUser().getName()}"></span></p>
     <form th:if="${isAdmin}" th:action="@{'/admin/get/order/' + ${order.getId()}}">
         <button type="submit">See more..</button>
     </form>
-    <form th:unless="${isAdmin}" th:action="@{'/admin/get/order/' + ${order.getId()}}">
+    <form th:unless="${isAdmin}" th:action="@{'/order/' + ${order.getId()}}">
         <button type="submit">See more..</button>
     </form>
+    <br>
 </div>
 <h2 th:unless="${orderList.size() > 0}">You've never been ordered anything... lol</h2>
+<a th:href="@{/}"><button>Back to Home</button></a>
 </body>

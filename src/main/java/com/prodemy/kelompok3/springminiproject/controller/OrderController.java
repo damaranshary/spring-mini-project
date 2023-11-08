@@ -46,12 +46,13 @@ public class OrderController {
     }
 
     @GetMapping("/order/{orderId}")
-    public String getOrderDetailsById(@PathVariable(name = "orderId") String orderId, Model model){
+    public String getOrderDetailsById(@PathVariable(name = "orderId") String orderId, Model model) {
         User user = userService.getCurrentUser();
         Order order = orderService.findOrderById(orderId);
 
         if (user.getOrders().contains(order)) {
             model.addAttribute("order", order);
+            model.addAttribute("isAdmin", false);
             return "detailsOrderPage";
         } else {
             return "notFound404Page";
@@ -81,9 +82,10 @@ public class OrderController {
     }
 
     @GetMapping("/admin/get/order/{orderId}")
-    public String getOrderById(@PathVariable("orderId") String orderId, Model model){
+    public String getOrderById(@PathVariable("orderId") String orderId, Model model) {
         Order order = orderService.findOrderById(orderId);
         model.addAttribute("order", order);
+        model.addAttribute("isAdmin", true);
 
         return "detailsOrderPage";
     }

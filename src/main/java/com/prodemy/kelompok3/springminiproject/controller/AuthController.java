@@ -18,20 +18,20 @@ import jakarta.validation.Valid;
 public class AuthController {
 
     @Autowired
-	private UserService userService;
-	
-	@GetMapping("/login")
-	public String loginForm(Model model) {
+    private UserService userService;
+
+    @GetMapping("/login")
+    public String loginForm(Model model) {
         User user = new User();
         model.addAttribute("user", user);
-		return "login";
-	}
-	
-	// handler method to handle register user form submit request
+        return "login";
+    }
+
+    // handler method to handle register user form submit request
     @PostMapping("/registration")
     public String registerUserAccount(@Valid @ModelAttribute("user") UserDto user,
-                               BindingResult result,
-                               Model model){
+                                      BindingResult result,
+                                      Model model) {
         User existing = userService.findByUsername(user.getUsername());
         if (existing != null) {
             result.rejectValue("email", null, "There is already an account registered with that email");

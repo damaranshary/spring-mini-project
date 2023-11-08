@@ -23,30 +23,16 @@ public class ProductController {
     private ProductService productService;
 
 
-    @GetMapping(path = "/api/images/1/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<byte[]> getFirstImage(@PathVariable(name = "productId") String productId) {
+    @GetMapping(path = "/api/images/{index}/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getImage(@PathVariable(name = "index") Integer index, @PathVariable(name = "productId") String productId) {
         List<ProductImage> productImages = productService.findProductById(productId).getImages();
 
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(productImages.get(0).getData());
-    }
-
-    @GetMapping(path = "/api/images/2/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<byte[]> getSecondImage(@PathVariable(name = "productId") String productId) {
-        List<ProductImage> productImages = productService.findProductById(productId).getImages();
-
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(productImages.get(1).getData());
-    }
-
-    @GetMapping(path = "/api/images/3/{productId}", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<byte[]> getThirdImage(@PathVariable(name = "productId") String productId) {
-        List<ProductImage> productImages = productService.findProductById(productId).getImages();
-
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(productImages.get(2).getData());
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(productImages.get(index - 1).getData());
     }
 
     @GetMapping(path = "/product/{productId}")
     public String getProductById(@PathVariable(name = "productId") String productId, Model model) {
-        model.addAttribute("isAdmin",false);
+        model.addAttribute("isAdmin", false);
         return getProductByIdWrapper(productId, model);
     }
 
@@ -83,8 +69,8 @@ public class ProductController {
 
     @GetMapping(path = "/admin/get/products/filter")
     public String getProductUsingFilterFromAdmin(@RequestParam(name = "query", required = false) String query,
-                                                @RequestParam(name = "minPrice", required = false) Long minPrice,
-                                                @RequestParam(name = "maxPrice", required = false) Long maxPrice, Model model) {
+                                                 @RequestParam(name = "minPrice", required = false) Long minPrice,
+                                                 @RequestParam(name = "maxPrice", required = false) Long maxPrice, Model model) {
         model.addAttribute("isAdmin", true);
         return productFilterWrapper(query, minPrice, maxPrice, model);
     }

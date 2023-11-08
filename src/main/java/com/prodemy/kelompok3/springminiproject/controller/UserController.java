@@ -34,6 +34,7 @@ public class UserController {
     public String getUserProfile(Model model) {
         User user = userService.getCurrentUser();
         model.addAttribute("user", user);
+        model.addAttribute("isAdmin", false);
         return "detailsUserPage";
     }
 
@@ -43,7 +44,7 @@ public class UserController {
         User user = userService.getCurrentUser();
         model.addAttribute("user", user);
 
-        return "updateUserPage";
+        return "updateProfilePage";
     }
 
     @PostMapping("/profile/update")
@@ -55,17 +56,18 @@ public class UserController {
 
     // this is the borderline between user and admin controller
     @GetMapping("/admin/get/users")
-    public String getRegisteredUsers(Model model){
+    public String getRegisteredUsers(Model model) {
         List<UserDto> users = userService.findAllUsers();
         model.addAttribute("userList", users);
         return "userListPage";
     }
 
     @GetMapping("/admin/get/user/{userId}")
-    public String getUserById(@PathVariable(name = "userId") String userId, Model model){
+    public String getUserById(@PathVariable(name = "userId") String userId, Model model) {
         User user = userService.findUserById(userId);
 
         model.addAttribute("user", user);
+        model.addAttribute("isAdmin", true);
         return "detailsUserPage";
     }
 
@@ -75,7 +77,7 @@ public class UserController {
 
         model.addAttribute("user", user);
 
-        return "registration";
+        return "addUserPage";
     }
 
     @PostMapping("/admin/add/user")

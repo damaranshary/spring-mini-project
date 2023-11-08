@@ -27,7 +27,7 @@ public class CartController {
 
     @PostMapping("/cart/add")
     public String addProductToCart(@RequestParam(name = "product") Product product,
-                                 @RequestParam(name = "quantity") int quantity) {
+                                   @RequestParam(name = "quantity") int quantity) {
         User user = userService.getCurrentUser();
         Cart cart = user.getCart();
 

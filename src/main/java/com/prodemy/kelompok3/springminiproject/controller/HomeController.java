@@ -21,7 +21,7 @@ public class HomeController {
 
         model.addAttribute("user", user);
 
-        if (role.equals("ROLE_ADMIN")){
+        if (role.equals("ROLE_ADMIN")) {
             return "indexAdmin";
         }
 
